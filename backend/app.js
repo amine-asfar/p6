@@ -1,17 +1,21 @@
 const express = require('express')
-const app = express();
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+
 
 const userRoutes = require('./routes/user');
 
 require('dotenv').config()
-const mongoose = require('mongoose');
+
 mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
     .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+    .catch((e) => console.log('Connexion à MongoDB échouée !', e));
+const app = express();
+
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,6 +23,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
+app.use(bodyParser.json());
 app.use('/api/auth', userRoutes);
 
 module.exports = app;
