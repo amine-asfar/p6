@@ -9,3 +9,4 @@ router.post('/login', userCtrl.login);
 
 //exporter router pour importer dans app.js
 module.exports = router;
+
