@@ -2,15 +2,6 @@ const Sauces = require('../models/sauces');
 const fs = require('fs');
 const sauces = require('../models/sauces');
 
-// exports.creatSauces = (req, res, next) => {
-//     delete req.body._id;
-//     const sauces = new Sauces({
-//         ...req.body
-//     })
-//     sauces.save()
-//         .then(() => res.status(201).json({ message: 'object enregistre !' }))
-//         .catch(error => res.status(400).json({ error }));
-// }
 
 exports.creatSauce = (req, res, next) => {
     const saucesObject = JSON.parse(req.body.sauce);
@@ -30,15 +21,14 @@ exports.creatSauce = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
-// exports.modifySauces = (req, res, next) => {
-//     Sauces.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-//         .then(() => res.status(200).json({ message: 'object modifie !' }))
-//         .catch(error => res.status(400).json({ error }));
-// }
+
 exports.modifySauce = (req, res, next) => {
+
     const saucesObject = req.file ?
+
         {
-            ...JSON.parse(req.body.sauces),
+
+            ...JSON.parse(req.body.sauce),
             imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         } : { ...req.body };
     sauces.updateOne({ _id: req.params.id }, { ...saucesObject, _id: req.params.id })
@@ -47,17 +37,11 @@ exports.modifySauce = (req, res, next) => {
 };
 
 
-// exports.deleteSauces = (req, res, next) => {
-//     sauces.deleteOne({ _id: req.params.id })
-//         .then(() => res.status(200).json({ message: 'object supprime !' }))
-//         .catch(error => res.status(400).json({ error }));
-// }
+
 exports.deleteSauce = (req, res, next) => {
     Sauces.findOne({ _id: req.params.id })
         .then(sauce => {
             const filename = sauce.imageUrl.split('/images/')[1];
-            console.log("")
-            console.log(filename)
             fs.unlink(`images/${filename}`, () => {
                 Sauces.deleteOne({ _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Objet supprimé !' }))
